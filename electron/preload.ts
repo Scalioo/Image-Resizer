@@ -10,10 +10,8 @@ contextBridge.exposeInMainWorld('path', {
   join: (...args : string[]):string => path.join(...args),
 });
 
-// --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld('ipcRenderer', withPrototype(ipcRenderer))
 
-// `exposeInMainWorld` can't detect attributes and methods of `prototype`, manually patching it.
 function withPrototype(obj: Record<string, any>) {
   const protos = Object.getPrototypeOf(obj)
 
@@ -21,7 +19,6 @@ function withPrototype(obj: Record<string, any>) {
     if (Object.prototype.hasOwnProperty.call(obj, key)) continue
 
     if (typeof value === 'function') {
-      // Some native APIs, like `NodeJS.EventEmitter['on']`, don't work in the Renderer process. Wrapping them into a function.
       obj[key] = function (...args: any) {
         return value.call(obj, ...args)
       }
@@ -32,7 +29,6 @@ function withPrototype(obj: Record<string, any>) {
   return obj
 }
 
-// --------- Preload scripts loading ---------
 function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
   return new Promise(resolve => {
     if (condition.includes(document.readyState)) {
@@ -60,12 +56,7 @@ const safeDOM = {
   },
 }
 
-/**
- * https://tobiasahlin.com/spinkit
- * https://connoratherton.com/loaders
- * https://projects.lukehaas.me/css-loaders
- * https://matejkustec.github.io/SpinThatShit
- */
+
 function useLoading() {
   const className = `loaders-css__square-spin`
   const styleContent = `
@@ -115,7 +106,6 @@ function useLoading() {
   }
 }
 
-// ----------------------------------------------------------------------
 
 const { appendLoading, removeLoading } = useLoading()
 domReady().then(appendLoading)

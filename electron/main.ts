@@ -8,7 +8,6 @@ process.env.VITE_PUBLIC = app.isPackaged ? process.env.DIST : path.join(process.
 
 
 let imageresizer : BrowserWindow | null
-// 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
 
 function createWindow() {
@@ -37,14 +36,11 @@ function createWindow() {
   if (VITE_DEV_SERVER_URL) {
     imageresizer.loadURL(VITE_DEV_SERVER_URL)
   } else {
-    // imageresizer.loadFile('dist/index.html')
     imageresizer.loadFile(path.join(process.env.DIST, 'index.html'))
   }
 }
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
+
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
@@ -53,8 +49,7 @@ app.on('window-all-closed', () => {
 })
 
 app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
+
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow()
   }
@@ -80,24 +75,19 @@ async function resizeImage({ imgPath, height, width, dest } : any ) {
   try {
      console.log(imgPath, height, width, dest);
 
-    // Resize image
     const newPath = await resizeImg(fs.readFileSync(imgPath), {
       width: +width,
       height: +height,
     });
 
-    // Get filename
     const filename = path.basename(imgPath);
 
-    // Create destination folder if it doesn't exist
     if (!fs.existsSync(dest)) {
       fs.mkdirSync(dest);
     }
 
-    // Write the file to the destination folder
     fs.writeFileSync(path.join(dest, `resizer-${filename}`), newPath);
 
-    // Send success to renderer
       const options :  Electron.MessageBoxOptions = {
       type: 'info',
       title: 'Success',
@@ -115,7 +105,6 @@ async function resizeImage({ imgPath, height, width, dest } : any ) {
     .catch((error: Error) => {
       console.error('Error displaying message box:', error);
     });
-    // Open the folder in the file explorer
     
 
   } catch (err) {

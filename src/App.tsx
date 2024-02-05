@@ -22,27 +22,22 @@ function App() {
   const [Newsize , setNewSize] = useState<string>('null')
   const [uploadedfile ,setFile] = useState<any>(null)
   function calculateNewImageSize(oldSize: Dimensions, newSize: Dimensions, oldSizeInBytes: string): number {
-    // Calculate the conversion factors for width and height
     const widthConversionFactor = parseInt(newSize.width) / parseInt(oldSize.width);
     const heightConversionFactor = parseInt(newSize.height) / parseInt(oldSize.height);
   
-    // Use the average conversion factor
     const averageConversionFactor = (widthConversionFactor + heightConversionFactor) / 2;
   
-    // Estimate the new size based on the average conversion factor
     const newSizeInBytes = Math.round(extractBytesFromString(oldSizeInBytes) * averageConversionFactor);
   
     return newSizeInBytes *1.5;
   }
   function extractBytesFromString(sizeString: string): number {
-    // Regular expression to match numeric value and unit (e.g., "568KB")
     const regex = /^(\d+(\.\d+)?)\s*(KB|MB|GB)?$/i;
     const match = sizeString.match(regex);
   
     if (match) {
       const numericValue = parseFloat(match[1]);
-      const unit = match[3]?.toUpperCase() || 'B'; // Default to bytes if no unit is specified
-  
+      const unit = match[3]?.toUpperCase() || 'B'; 
       switch (unit) {
         case 'KB':
           return numericValue * 1024;
@@ -53,11 +48,11 @@ function App() {
         case 'B':
           return numericValue;
         default:
-          return 0; // Invalid unit
+          return 0;
       }
     }
   
-    return 0; // No match found
+    return 0; 
   }
   function formatBytes(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
@@ -153,15 +148,15 @@ function App() {
   }
   const updatewidth = (event : ChangeEvent<HTMLInputElement>) => {
     setNew({
-      ...New, // Spread the existing properties
-      width: event.target.value, // Update specific property
+      ...New, 
+      width: event.target.value, 
     });
     
   };
   const updateheight = (event : ChangeEvent<HTMLInputElement>) => {
     setNew({
-      ...New, // Spread the existing properties
-      height: event.target.value, // Update specific property
+      ...New, 
+      height: event.target.value, 
     });
   };
 
